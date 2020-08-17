@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --mode=development",
     "start": "webpack-dev-server --open",
-    "predeploy": "webpack --mode=production"
+    "predeploy": "webpack --mode=production",
+    "deploy": "git subtree split --branch gh-pages --prefix dist/ && git push origin gh-pages"
   },
   "keywords": [],
   "author": "",
