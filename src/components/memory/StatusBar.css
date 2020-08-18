@@ -1,0 +1,13 @@
+.status-bar {
+  display: flex;
+  align-items: center;
+}
+.status {
+  flex: 1;
+  margin: 0;
+  font-weight: 600;
+  color: white;
+}
+.button {
+  flex: 0;
+}

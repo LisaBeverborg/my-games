@@ -2,6 +2,12 @@ import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
+import "./Navigation.css";
+
+//import { AiFillHome } from "react-icons/ai";
+//import { GrApps } from "react-icons/gr";
+//import { GiMineExplosion } from "react-icons/gi";
+//import { GiSandSnake } from "react-icons/gi";
 
 function Navigation() {
   return (

@@ -1,0 +1,29 @@
+.memory-card {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+}
+.pink {
+  background-color: #ff43d0;
+}
+.red {
+  background-color: #ff0900;
+}
+.orange {
+  background-color: #ff7f00;
+}
+.yellow {
+  background-color: #ffef00;
+}
+.teal {
+  background-color: #63d3df;
+}
+.green {
+  background-color: #00f11d;
+}
+.blue {
+  background-color: #0079ff;
+}
+.purple {
+  background-color: #a800ff;
+}
