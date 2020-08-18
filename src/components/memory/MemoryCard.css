@@ -3,27 +3,31 @@
   border-radius: 5px;
   background-color: white;
 }
+
+.memory-card:hover {
+  cursor: pointer;
+}
 .pink {
-  background-color: #ff43d0;
+  background-color: #ff69b4;
 }
 .red {
-  background-color: #ff0900;
+  background-color: #c1301c;
 }
 .orange {
-  background-color: #ff7f00;
+  background-color: #c96112;
 }
 .yellow {
-  background-color: #ffef00;
+  background-color: #c4a705;
 }
 .teal {
-  background-color: #63d3df;
+  background-color: #259e9e;
 }
 .green {
-  background-color: #00f11d;
+  background-color: #177245;
 }
 .blue {
-  background-color: #0079ff;
+  background-color: #2e5793;
 }
 .purple {
-  background-color: #a800ff;
+  background-color: #4b2882;
 }

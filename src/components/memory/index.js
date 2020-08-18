@@ -50,17 +50,19 @@ function Memory() {
   }
 
   return (
-    <div className="game-container">
-      <StatusBar status="Time: 0s" onRestart={onRestart}></StatusBar>
-      <div className="memory-grid">
-        {cards.map((card) => (
-          <MemoryCard
-            key={card.key}
-            color={card.color}
-            isFlipped={card.isFlipped}
-            onClick={() => onCardClicked(card)}
-          />
-        ))}
+    <div className="memory">
+      <div className="game-container">
+        <StatusBar status="Time: 0s" onRestart={onRestart}></StatusBar>
+        <div className="memory-grid">
+          {cards.map((card) => (
+            <MemoryCard
+              key={card.key}
+              color={card.color}
+              isFlipped={card.isFlipped}
+              onClick={() => onCardClicked(card)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
