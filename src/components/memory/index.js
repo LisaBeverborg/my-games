@@ -28,25 +28,36 @@ function generateCards() {
       isFlipped: false,
     });
   }
-  return cards;
+  return cards.sort(() => Math.random() - 0.5);
 }
 
 function Memory() {
   const [cards, setCards] = useState(generateCards());
 
-  function onCardClicked(card) {
-    console.log(card);
+  function onCardClicked(clickedCard) {
+    setCards((oldCards) => {
+      return oldCards.map((card) => {
+        if (card.key === clickedCard.key) {
+          return { ...card, isFlipped: !card.isFlipped };
+        }
+        return card;
+      });
+    });
+  }
+
+  function onRestart() {
+    setCards(generateCards());
   }
 
   return (
     <div className="game-container">
-      <StatusBar status="Time: 0s"></StatusBar>
+      <StatusBar status="Time: 0s" onRestart={onRestart}></StatusBar>
       <div className="memory-grid">
         {cards.map((card) => (
           <MemoryCard
             key={card.key}
             color={card.color}
-            isFlipped={true}
+            isFlipped={card.isFlipped}
             onClick={() => onCardClicked(card)}
           />
         ))}
