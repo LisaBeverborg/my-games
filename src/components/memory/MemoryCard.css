@@ -1,7 +1,7 @@
 .memory-card {
   border: 1px solid black;
   border-radius: 5px;
-  background-color: white;
+  background-color: rgb(235, 235, 224);
 }
 
 .memory-card:hover {

@@ -25,8 +25,9 @@ function Navigation() {
           <Link to="/minesweeper" className="nav-link">
             Minesweeper
           </Link>
-          <Link to="/snake" className="nav-link">
-            Snake
+          <Link to="/snake">
+            <span className="snake-icon"></span>
+            <p className="snake">Snake</p>
           </Link>
         </Nav>
       </Navbar.Collapse>

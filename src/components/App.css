@@ -9,7 +9,8 @@
 }
 
 .text-container {
-  margin: 3rem auto;
+  margin: 5rem auto;
+  margin-bottom: 20rem;
   padding: 1em;
   padding-bottom: 2.5rem;
   background-color: darkgrey;
@@ -18,13 +19,17 @@
 }
 
 footer {
-  position: absolute;
   bottom: 0;
   width: 100%;
 
   background-color: darkgrey;
 
   text-align: center;
+}
+
+footer h2 {
+  padding-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .github-repo-link {

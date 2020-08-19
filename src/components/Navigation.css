@@ -1,5 +1,9 @@
+.snake {
+  content: url("../images/snake.svg");
+}
 .navbar-brand,
-.nav-link {
+.nav-link,
+.snake {
   height: 3rem;
   width: 7rem;
   background-color: lightgrey;
@@ -10,9 +14,22 @@
   text-align: center;
 }
 
+.snake p {
+  color: black;
+  margin: 0 1rem;
+  opacity: 0;
+  display: none;
+  transition: opacity 1s;
+}
 .navbar-brand:hover,
-.nav-link:hover {
+.nav-link:hover,
+.snake:hover {
   width: 11rem;
   cursor: pointer;
   background-color: grey;
+}
+
+.snake:hover p {
+  opacity: 100;
+  display: block;
 }
