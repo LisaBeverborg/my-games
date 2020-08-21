@@ -18,6 +18,11 @@
   text-align: center;
 }
 
+.game-container {
+  width: 40vw;
+  margin: 1vw auto;
+}
+
 footer {
   bottom: 0;
   width: 100%;

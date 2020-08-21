@@ -1,123 +1,69 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
-import StatusBar from "./StatusBar";
+import StatusBar from "../StatusBar";
 import MemoryCard from "./MemoryCard";
-
-const colors = [
-  "pink",
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "teal",
-  "blue",
-  "purple",
-];
-
-function generateCards() {
-  const cards = [];
-  for (let i = 0; i < colors.length; i++) {
-    cards.push({
-      key: i * 2,
-      color: colors[i],
-      isFlipped: false,
-    });
-    cards.push({
-      key: i * 2 + 1,
-      color: colors[i],
-      isFlipped: false,
-    });
-  }
-  return cards.sort(() => Math.random() - 0.5);
-}
+import * as utils from "../../utils";
+import * as helpers from "./helpers";
+import ResultModal from "../ResultModal";
 
 function Memory() {
-  /* const startTime = Date.now();
-  const intervalId = setInterval(
-    () => console.log(Date.now() - startTime),
-    1000
-  );
-  clearInterval(intervalId);
-*/
+  // [<current state>, <function to update state>] = useState(<initial state>)
   const [game, setGame] = useState({
-    cards: generateCards(),
-    firstCard: undefined,
-    secondCard: undefined,
+    cards: helpers.generateCards(),
   });
-
   const [startTime, setStartTime] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [win, setWin] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
+  // useEffect(<effect function>, <dependency array> - optional)
+  // <dependency array>:
+  // * undefined: effect function will be run on every render
+  // * []: effect will run only on the first render
+  // * [value1, value2]: effect will run when any of the values change
+  // effect function returns a cleanup function (optional)
+  //   that runs next time the effect function is run OR when the component
+  //   unmounts (disappears from the DOM)
   useEffect(() => {
-    if (startTime !== 0) {
-      const intervalID = setInterval(() => {
+    if (startTime !== 0 && !win) {
+      const intervalId = setInterval(() => {
         setElapsedTime(Date.now() - startTime);
       }, 1000);
-      return () => clearInterval(intervalID);
+      return () => clearInterval(intervalId);
     }
-  }, [startTime]);
+  }, [startTime, win]);
 
-  function flipCard(cards, cardToFlip) {
-    return cards.map((card) => {
-      if (card.key === cardToFlip.key) {
-        return { ...card, isFlipped: !card.isFlipped };
-      }
-      return card;
-    });
-  }
-
-  function onCardClick(card) {
-    if (card.isFlipped) {
-      return;
+  // When win becomes true, show the modal.
+  useEffect(() => {
+    if (win) {
+      setShowModal(true);
     }
+  }, [win]);
 
-    setGame(({ cards, firstCard, secondCard }) => {
-      let newCards = flipCard(cards, card);
-      if (!firstCard) {
-        return {
-          cards: newCards,
-          firstCard: card,
-        };
-      } else if (!secondCard) {
-        return {
-          cards: newCards,
-          firstCard: firstCard,
-          secondCard: card,
-        };
-      } else if (firstCard.color === secondCard.color) {
-        return { cards: newCards, firstCard, secondCard };
-      } else if (firstCard.color === secondCard.color) {
-        return {
-          cards: newCards,
-          firstCard: card,
-        };
-      } else {
-        newCards = flipCard(newCards, secondCard);
-        newCards = flipCard(newCards, firstCard);
-        return {
-          cards: newCards,
-          firstCard: card,
-        };
-      }
-    });
+  // Is called whenever a card is clicked. Sets the new game state
+  // and starts the timer (sets the start time), if it wasn't already started.
+  function onCardClicked(clickedCard) {
+    setGame((oldGame) =>
+      helpers.calculateNewGame(oldGame, clickedCard, () => setWin(true))
+    );
     setStartTime((oldStartTime) =>
       oldStartTime === 0 ? Date.now() : oldStartTime
     );
   }
 
+  // Runs when the restart button is clicked, resets the state with the new cards.
   function onRestart() {
     setGame({
-      cards: generateCards(),
-      firstCard: undefined,
-      secondCard: undefined,
+      cards: helpers.generateCards(),
     });
     setStartTime(0);
     setElapsedTime(0);
+    setWin(false);
   }
 
   return (
     <div className="memory">
-      <div className="game-container">
+      <div className="memory-container">
         <StatusBar
           status={"Time: " + elapsedTime}
           onRestart={onRestart}
@@ -128,11 +74,19 @@ function Memory() {
               key={card.key}
               color={card.color}
               isFlipped={card.isFlipped}
-              onClick={() => onCardClick(card)}
+              onClick={() => onCardClicked(card)}
             />
           ))}
         </div>
       </div>
+      <ResultModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        header={"Congratulations, you won!"}
+        body={"Your time was " + elapsedTime + "ms."}
+        fetchLeaderboard={helpers.fetchLeaderboard}
+        saveScore={(name) => helpers.saveScore(name, elapsedTime)}
+      ></ResultModal>
     </div>
   );
 }

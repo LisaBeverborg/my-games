@@ -1,9 +1,3 @@
-.memory-card {
-  border: 1px solid black;
-  border-radius: 5px;
-  background-color: rgb(235, 235, 224);
-}
-
 .memory-card:hover {
   cursor: pointer;
 }
@@ -30,4 +24,35 @@
 }
 .purple {
   background-color: #4b2882;
+}
+
+.memory-card-scene {
+  perspective: 600px;
+}
+.memory-card-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+.flipped {
+  transform: rotateY(180deg);
+}
+.memory-card {
+  border: 1px solid black;
+  border-radius: 5px;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari */
+}
+.back {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: rgb(235, 235, 224);
+}
+.front {
+  transform: rotateY(180deg);
 }
