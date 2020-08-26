@@ -45,3 +45,13 @@ export function saveScore(game, score) {
       console.log("Error saving score: ", error);
     });
 }
+
+export function prettifyTime(timeMs) {
+  const totalSeconds = Math.floor(timeMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds - minutes * 60;
+  if (minutes > 0) {
+    return `${minutes}m ${seconds}s`;
+  }
+  return `${seconds}s`;
+}

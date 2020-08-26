@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./index.css";
 import StatusBar from "../StatusBar";
 import MemoryCard from "./MemoryCard";
@@ -7,7 +7,6 @@ import * as helpers from "./helpers";
 import ResultModal from "../ResultModal";
 
 function Memory() {
-  // [<current state>, <function to update state>] = useState(<initial state>)
   const [game, setGame] = useState({
     cards: helpers.generateCards(),
   });
@@ -15,15 +14,10 @@ function Memory() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [win, setWin] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [wrongPair, setWrongPair] = useState(null);
 
-  // useEffect(<effect function>, <dependency array> - optional)
-  // <dependency array>:
-  // * undefined: effect function will be run on every render
-  // * []: effect will run only on the first render
-  // * [value1, value2]: effect will run when any of the values change
-  // effect function returns a cleanup function (optional)
-  //   that runs next time the effect function is run OR when the component
-  //   unmounts (disappears from the DOM)
+  const timeoutIds = useRef([]);
+
   useEffect(() => {
     if (startTime !== 0 && !win) {
       const intervalId = setInterval(() => {
@@ -33,18 +27,42 @@ function Memory() {
     }
   }, [startTime, win]);
 
-  // When win becomes true, show the modal.
   useEffect(() => {
     if (win) {
       setShowModal(true);
     }
   }, [win]);
 
-  // Is called whenever a card is clicked. Sets the new game state
-  // and starts the timer (sets the start time), if it wasn't already started.
+  // flip back if wrong pair
+  useEffect(() => {
+    if (!wrongPair) return;
+    const timeoutId = setTimeout(() => {
+      setGame((oldGame) => {
+        let newCards = helpers.flipCard(oldGame.cards, wrongPair[0]);
+        newCards = helpers.flipCard(newCards, wrongPair[1]);
+        return {
+          ...oldGame,
+          cards: newCards,
+        };
+      });
+    }, 1000);
+    timeoutIds.current.push(timeoutId);
+  }, [wrongPair]);
+
+  useEffect(() => {
+    return () => {
+      timeoutIds.current.forEach((id) => clearTimeout(id));
+    };
+  }, []);
+
   function onCardClicked(clickedCard) {
     setGame((oldGame) =>
-      helpers.calculateNewGame(oldGame, clickedCard, () => setWin(true))
+      helpers.calculateNewGame(
+        oldGame,
+        clickedCard,
+        () => setWin(true),
+        setWrongPair
+      )
     );
     setStartTime((oldStartTime) =>
       oldStartTime === 0 ? Date.now() : oldStartTime
@@ -65,7 +83,7 @@ function Memory() {
     <div className="memory">
       <div className="memory-container">
         <StatusBar
-          status={"Time: " + elapsedTime}
+          status={"Time: " + utils.prettifyTime(elapsedTime)}
           onRestart={onRestart}
         ></StatusBar>
         <div className="memory-grid">
@@ -83,7 +101,7 @@ function Memory() {
         show={showModal}
         handleClose={() => setShowModal(false)}
         header={"Congratulations, you won!"}
-        body={"Your time was " + elapsedTime + "ms."}
+        body={"Your time was " + utils.prettifyTime(elapsedTime) + "."}
         fetchLeaderboard={helpers.fetchLeaderboard}
         saveScore={(name) => helpers.saveScore(name, elapsedTime)}
       ></ResultModal>

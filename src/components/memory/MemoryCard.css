@@ -33,7 +33,7 @@
   width: 100%;
   height: 100%;
   position: relative;
-  transition: transform 1s;
+  transition: transform 700ms;
   transform-style: preserve-3d;
 }
 .flipped {
