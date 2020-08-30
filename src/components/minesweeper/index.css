@@ -1,0 +1,29 @@
+@media only screen and (orientation: landscape) {
+  .ms-grid {
+    height: 40vw;
+  }
+  .ms-icon {
+    font-size: 1.8vw;
+  }
+}
+@media only screen and (orientation: portrait) {
+  .ms-grid {
+    height: 98vw;
+  }
+  .ms-icon {
+    font-size: 4vw;
+  }
+}
+.ms-grid {
+  margin-top: 1vw;
+  border: 1px solid #dddddd;
+  background-color: #dddddd;
+  display: grid;
+  grid-template-columns: repeat(10, auto);
+  grid-template-rows: repeat(10, auto);
+}
+
+.ms-icon {
+  vertical-align: middle;
+  display: table-cell;
+}

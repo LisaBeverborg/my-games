@@ -2,22 +2,52 @@
   position: relative;
 }
 
+@media only screen and (orientation: landscape) {
+  .memory-grid {
+    height: 40vw;
+    grid-gap: 0.5vw;
+  }
+
+  .memory-container {
+    position: relative;
+    width: 50vw;
+    margin: 2vw auto;
+    padding: 1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: grey;
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);
+  }
+}
+@media only screen and (orientation: portrait) {
+  .memory-grid {
+    height: 98vw;
+    grid-gap: 1vw;
+  }
+
+  .memory-container {
+    position: relative;
+    margin: 2vw auto;
+    padding: 1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: grey;
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);
+  }
+}
+.memory-grid {
+  margin-top: 1vw;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-template-rows: repeat(4, auto);
+}
+
 .memory-container {
   position: relative;
-  width: 50vw;
   margin: 2vw auto;
   padding: 1rem;
   border: 1px solid black;
   border-radius: 5px;
   background-color: grey;
   box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);
-}
-
-.memory-grid {
-  height: 40vw;
-  margin-top: 1vw;
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-template-rows: repeat(4, auto);
-  grid-gap: 0.5vw;
 }

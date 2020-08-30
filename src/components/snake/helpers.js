@@ -1,5 +1,8 @@
+import * as utils from "../../utils";
+
 export const width = 20;
 export const height = 12;
+export const initialIntervalMs = 400;
 
 export function generateGame() {
   const snake = {
@@ -18,6 +21,7 @@ export function generateGame() {
   return {
     snake: snake,
     food: generateFood(snake),
+    commands: [],
   };
 }
 
@@ -107,4 +111,37 @@ export function isGameOver(game) {
 
 function isOutOfBounds(cell) {
   return cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height;
+}
+
+export function getIntervalMs(game) {
+  return initialIntervalMs * Math.pow(0.95, Math.floor(getScore(game) / 3));
+}
+
+export function getScore(game) {
+  return game.snake.tail.length - 1;
+}
+
+export function fetchLeaderboard() {
+  return utils
+    .fetchLeaderboard("snake", [
+      ["score", "desc"],
+      ["timeMs", "asc"],
+    ])
+    .then((leaderboard) => {
+      return leaderboard.map(
+        (entry, i) => `${i + 1}. ${entry.name}: ${entry.score}`
+      );
+    });
+}
+
+export function saveScore(name) {
+  if (name) {
+    utils
+      .saveScore("snake", {
+        name: name,
+        timeMs: elapsedTime,
+        score: getScore(game),
+      })
+      .then(() => setScoreIsSaved(true));
+  }
 }

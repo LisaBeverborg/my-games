@@ -15,6 +15,7 @@ function Memory() {
   const [win, setWin] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [wrongPair, setWrongPair] = useState(null);
+  const [noClicksAllowed, setNoClicksAllowed] = useState(false);
 
   const timeoutIds = useRef([]);
 
@@ -36,6 +37,7 @@ function Memory() {
   // flip back if wrong pair
   useEffect(() => {
     if (!wrongPair) return;
+    setNoClicksAllowed(true);
     const timeoutId = setTimeout(() => {
       setGame((oldGame) => {
         let newCards = helpers.flipCard(oldGame.cards, wrongPair[0]);
@@ -83,8 +85,9 @@ function Memory() {
     <div className="memory">
       <div className="memory-container">
         <StatusBar
-          status={"Time: " + utils.prettifyTime(elapsedTime)}
+          status1={"Time: " + utils.prettifyTime(elapsedTime)}
           onRestart={onRestart}
+          onShowLeaderboard={() => setShowModal(true)}
         ></StatusBar>
         <div className="memory-grid">
           {game.cards.map((card) => (

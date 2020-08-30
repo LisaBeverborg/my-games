@@ -1,0 +1,55 @@
+@media only screen and (orientation: landscape) {
+  .ms-cell {
+    height: 4vw;
+    width: 4vw;
+  }
+}
+@media only screen and (orientation: portrait) {
+  .ms-cell {
+    height: 9.8vw;
+    width: 9.8vw;
+  }
+}
+.ms-cell {
+  background-color: #c0c0c0;
+  border: 5px solid;
+  border-top-color: #ffffff;
+  border-right-color: #7b7b7b;
+  border-bottom-color: #7b7b7b;
+  border-left-color: #ffffff;
+  text-align: center;
+  display: table;
+}
+.ms-cell-open {
+  background-color: #cecece;
+  border: 1px solid #dddddd;
+}
+
+.ms-number {
+  font-family: "Press Start 2P";
+}
+
+.ms-1 {
+  color: blue;
+}
+.ms-2 {
+  color: green;
+}
+.ms-3 {
+  color: red;
+}
+.ms-4 {
+  color: purple;
+}
+.ms-5 {
+  color: maroon;
+}
+.ms-6 {
+  color: turquoise;
+}
+.ms-7 {
+  color: black;
+}
+.ms-8 {
+  color: gray;
+}

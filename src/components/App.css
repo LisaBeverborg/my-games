@@ -18,8 +18,17 @@
   text-align: center;
 }
 
+@media only screen and (orientation: landscape) {
+  .game-container {
+    width: 40vw;
+  }
+}
+@media only screen and (orientation: portrait) {
+  .game-container {
+    width: 98vw;
+  }
+}
 .game-container {
-  width: 40vw;
   margin: 1vw auto;
 }
 
