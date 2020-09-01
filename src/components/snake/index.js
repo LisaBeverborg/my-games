@@ -7,47 +7,28 @@ import * as utils from "../../utils";
 import TouchController from "./TouchController";
 import ResultModal from "../ResultModal";
 
-const width = 20;
-const height = 12;
-
 function Snake() {
   const [game, setGame] = useState(helpers.generateGame());
   const [gameOver, setGameOver] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [intervalMs, setIntervalMs] = useState(helpers.initialIntervalMs);
   const [startTime, setStartTime] = useState(Date.now());
-  const [showModal, setShowModal] = useState(false);
-  const [scoreIsSaved, setScoreIsSaved] = useState(false);
+  const [scoreCanBeSaved, setScoreCanBeSaved] = useState(false);
 
-  /*useEffect(() => {
+  useEffect(() => {
     if (gameOver) return;
-    const intervalId = setInterval(
-      () =>
+    {
+      const intervalId = setInterval(() => {
         setGame((oldGame) => {
           const newGame = helpers.tick(oldGame);
           if (helpers.isGameOver(newGame)) {
             setGameOver(true);
-            console.log("You loose!");
+            setShowModal(true);
+            setScoreCanBeSaved(true);
             return oldGame;
           }
-          return newGame;
-        }),
-      400
-    );
-    return () => clearInterval(intervalId);
-  }, [gameOver]);
-  */
-
-  useEffect(() => {
-    if (!gameOver) {
-      const intervalId = setInterval(() => {
-        setGame((oldGame) => {
-          const newGame = helpers.tick(oldGame);
-          if (newGame.isOver) {
-            setGameOver(true);
-            setShowModal(true);
-          }
-          setIntervalMs(helpers.getIntervalMs(newGame));
+          setIntervalMs(helpers.getIntervalMs(newGame.snake.tail.length));
           return newGame;
         });
       }, intervalMs);
@@ -91,14 +72,14 @@ function Snake() {
     }
     if (newDir) {
       setGame((oldGame) => {
-        return { ...oldGame, snake: { ...oldGame.snake, dir: newDir } };
+        return { ...oldGame, commands: [...oldGame.commands, newDir] };
       });
     }
   }
 
   const cells = [];
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = 0; y < helpers.height; y++) {
+    for (let x = 0; x < helpers.width; x++) {
       const cell = { x, y };
       let className = "";
       if (helpers.isEqual(cell, game.snake.head)) {
@@ -118,30 +99,27 @@ function Snake() {
   }
 
   function addCommand(dir) {
-    if (dir) {
-      setGame((oldGame) => {
-        return {
-          ...oldGame,
-          commands: [...oldGame.commands, dir],
-        };
-      });
-    }
+    setGame((oldGame) => {
+      return {
+        ...oldGame,
+        commands: [...oldGame.commands, dir],
+      };
+    });
   }
 
   function onRestart() {
     setGame(helpers.generateGame());
     setGameOver(false);
     setElapsedTime(0);
-    setIntervalMs(helpers.initialIntervalMs);
     setStartTime(Date.now());
-    setScoreIsSaved(false);
+    setScoreCanBeSaved(false);
   }
 
   return (
     <div className="memory-container">
       <StatusBar
         status1={"Time: " + utils.prettifyTime(elapsedTime)}
-        status2={"Score: " + helpers.getScore(game)}
+        status2={`Score: ${helpers.getScore(game)}`}
         onRestart={onRestart}
         onShowLeaderboard={() => setShowModal(true)}
       ></StatusBar>
@@ -149,11 +127,16 @@ function Snake() {
       <TouchController onChangeDir={addCommand} />
       <ResultModal
         show={showModal}
-        header={gameOver ? "Game over!" : "Leaderboard"}
-        body={gameOver && "You score was " + helpers.getScore(game) + "."}
         handleClose={() => setShowModal(false)}
+        header={gameOver ? "Game over!" : "Leaderboard"}
+        body={gameOver ? `You score was ${helpers.getScore(game)}.` : ""}
         fetchLeaderboard={helpers.fetchLeaderboard}
-        saveScore={gameOver && !scoreIsSaved && helpers.saveScore}
+        saveScore={(name) =>
+          helpers
+            .saveScore(name, helpers.getScore(game), elapsedTime)
+            .then(() => setScoreCanBeSaved(false))
+        }
+        scoreCanBeSaved={scoreCanBeSaved}
       ></ResultModal>
     </div>
   );

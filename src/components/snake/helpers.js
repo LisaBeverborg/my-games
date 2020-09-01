@@ -47,32 +47,28 @@ function random(max) {
   return Math.floor(Math.random() * max);
 }
 
-export function tick(oldGame) {
-  const oldSnake = oldGame.snake;
-  const oldFood = oldGame.food;
+export function tick(game) {
+  const oldSnake = game.snake;
+  const oldFood = game.food;
+  const commands = game.commands;
+  let newCommands = [...commands];
 
-  const newHead = generateNewHead(oldSnake);
-  const newTail = generateNewTail(oldSnake, oldFood, newHead);
-  const newSnake = {
-    ...oldSnake,
-    head: newHead,
-    tail: newTail,
-  };
-
-  let newFood = oldFood;
-  if (isEqual(oldFood, newHead)) {
-    newFood = generateFood(newSnake);
+  while (
+    newCommands.length > 0 &&
+    (isOpposite(newCommands[0], oldSnake.dir) ||
+      newCommands[0] === oldSnake.dir)
+  ) {
+    newCommands = newCommands.slice(1);
   }
 
-  return {
-    snake: newSnake,
-    food: newFood,
-  };
-}
+  let newDir = oldSnake.dir;
+  if (newCommands.length > 0) {
+    newDir = newCommands[0];
+    newCommands = newCommands.slice(1);
+  }
 
-function generateNewHead(oldSnake) {
   let newHead;
-  switch (oldSnake.dir) {
+  switch (newDir) {
     case "right":
       newHead = { x: oldSnake.head.x + 1, y: oldSnake.head.y };
       break;
@@ -86,11 +82,30 @@ function generateNewHead(oldSnake) {
       newHead = { x: oldSnake.head.x, y: oldSnake.head.y - 1 };
       break;
   }
-  return newHead;
+
+  const newTail = generateNewTail(oldSnake, oldFood, newHead);
+  const newSnake = {
+    ...oldSnake,
+    head: newHead,
+    tail: newTail,
+    dir: newDir,
+  };
+
+  let newFood = oldFood;
+  if (isEqual(oldFood, newHead)) {
+    newFood = generateFood(newSnake);
+  }
+
+  return {
+    snake: newSnake,
+    food: newFood,
+    commands: newCommands,
+  };
 }
 
 function generateNewTail(oldSnake, oldFood, newHead) {
-  let newTail = [oldSnake.head].concat(oldSnake.tail);
+  let newTail = [oldSnake.head];
+  newTail = newTail.concat(oldSnake.tail);
 
   //alternative to concat
   //newTail =[oldSnake.head, ...oldSnake.tail];
@@ -113,35 +128,41 @@ function isOutOfBounds(cell) {
   return cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height;
 }
 
-export function getIntervalMs(game) {
-  return initialIntervalMs * Math.pow(0.95, Math.floor(getScore(game) / 3));
-}
+export const getScore = (game) => game.snake.tail.length - 1;
 
-export function getScore(game) {
-  return game.snake.tail.length - 1;
+export function getIntervalMs(tailLength) {
+  return initialIntervalMs * Math.pow(0.8, Math.floor((tailLength - 1) / 3));
 }
 
 export function fetchLeaderboard() {
   return utils
     .fetchLeaderboard("snake", [
       ["score", "desc"],
-      ["timeMs", "asc"],
+      //["timeMs", "asc"],
     ])
-    .then((leaderboard) => {
-      return leaderboard.map(
-        (entry, i) => `${i + 1}. ${entry.name}: ${entry.score}`
-      );
-    });
+    .then((leaderboard) =>
+      leaderboard.map(
+        (score, i) =>
+          `${i + 1}. ${score.name}: ${score.score}, ${utils.prettifyTime(
+            score.timeMs
+          )}`
+      )
+    );
 }
 
-export function saveScore(name) {
-  if (name) {
-    utils
-      .saveScore("snake", {
-        name: name,
-        timeMs: elapsedTime,
-        score: getScore(game),
-      })
-      .then(() => setScoreIsSaved(true));
-  }
+export function saveScore(name, score, timeMs) {
+  return utils.saveScore("snake", {
+    name: name,
+    timeMs: timeMs,
+    score: score,
+  });
+}
+
+function isOpposite(dir1, dir2) {
+  return (
+    (dir1 === "left" && dir2 === "right") ||
+    (dir1 === "right" && dir2 === "left") ||
+    (dir1 === "up" && dir2 === "down") ||
+    (dir1 === "down" && dir2 === "up")
+  );
 }

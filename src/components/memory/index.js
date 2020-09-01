@@ -16,6 +16,7 @@ function Memory() {
   const [showModal, setShowModal] = useState(false);
   const [wrongPair, setWrongPair] = useState(null);
   const [noClicksAllowed, setNoClicksAllowed] = useState(false);
+  const [scoreCanBeSaved, setScoreCanBeSaved] = useState(false);
 
   const timeoutIds = useRef([]);
 
@@ -31,6 +32,7 @@ function Memory() {
   useEffect(() => {
     if (win) {
       setShowModal(true);
+      setScoreCanBeSaved(true);
     }
   }, [win]);
 
@@ -79,6 +81,7 @@ function Memory() {
     setStartTime(0);
     setElapsedTime(0);
     setWin(false);
+    setScoreCanBeSaved(false);
   }
 
   return (
@@ -103,10 +106,17 @@ function Memory() {
       <ResultModal
         show={showModal}
         handleClose={() => setShowModal(false)}
-        header={"Congratulations, you won!"}
-        body={"Your time was " + utils.prettifyTime(elapsedTime) + "."}
+        header={win ? "Congratulations, you won!" : "Leaderboard"}
+        body={
+          win ? "Your time was " + utils.prettifyTime(elapsedTime) + "." : " "
+        }
         fetchLeaderboard={helpers.fetchLeaderboard}
-        saveScore={(name) => helpers.saveScore(name, elapsedTime)}
+        saveScore={(name) =>
+          helpers
+            .saveScore(name, elapsedTime)
+            .then(() => setScoreCanBeSaved(false))
+        }
+        scoreCanBeSaved={scoreCanBeSaved}
       ></ResultModal>
     </div>
   );

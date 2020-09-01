@@ -28,10 +28,10 @@ function ResultModal({
         <Modal.Title>{header}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {body && <p>{body}</p>}
+        <p>{body}</p>
         {!leaderboard && <p>Loading leaderboard...</p>}
         {leaderboard && leaderboard.map((entry, i) => <p key={i}>{entry}</p>)}
-        {!scoreCanBeSaved && (
+        {scoreCanBeSaved && (
           <Form.Control
             type="text"
             placeholder="Your name"
@@ -40,7 +40,7 @@ function ResultModal({
         )}
       </Modal.Body>
       <Modal.Footer>
-        {!scoreCanBeSaved && (
+        {scoreCanBeSaved && (
           <Button
             variant="light"
             onClick={() => {
@@ -55,7 +55,7 @@ function ResultModal({
         <Button
           variant="light"
           onClick={() => {
-            if (name && !scoreIsSaved) {
+            if (name && scoreCanBeSaved) {
               saveScore(name);
             }
             handleClose();
